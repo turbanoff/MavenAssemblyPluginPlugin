@@ -1,0 +1,30 @@
+<idea-plugin>
+  <id>org.turbanov.maven.assembly.plugin.plugin</id>
+  <name>maven-assembly-plugin plugin</name>
+  <version>1.0</version>
+  <vendor email="turbanoff@gmail.com.com" url="https://github.com/turbanov">Andrey Turbanov</vendor>
+
+  <description><![CDATA[
+      Validates maven-assembly-plugin descriptor content
+    ]]></description>
+
+  <change-notes><![CDATA[
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <depends>org.jetbrains.idea.maven</depends>
+  <depends>com.intellij.modules.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+    <localInspection groupName="Maven" language="XML" shortName="MavenAssemblyPluginDependenciesInspection"
+                     displayName="Dependency in maven-assembly-plugin descriptor" enabledByDefault="true"
+                     level="WARNING" implementationClass="org.turbanov.maven.assembly.CheckDependenciesPresent"/>
+  </extensions>
+
+</idea-plugin>
