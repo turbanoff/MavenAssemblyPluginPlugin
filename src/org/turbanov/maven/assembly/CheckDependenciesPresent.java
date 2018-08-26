@@ -21,6 +21,7 @@ import org.jetbrains.idea.maven.model.MavenId;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -85,7 +86,25 @@ public class CheckDependenciesPresent extends XmlSuppressableInspectionTool {
             return null;
         }
 
-        List<MavenArtifact> allDependencies = mavenProject.getDependencies();
+        MavenId mavenId = mavenProject.getMavenId();
+        MavenArtifact thisArtifact = new MavenArtifact(
+                mavenId.getGroupId(),
+                mavenId.getArtifactId(),
+                mavenId.getVersion(),
+                null,
+                mavenProject.getPackaging(),
+                null,
+                "compile",
+                false,
+                mavenProject.getPackaging(),
+                null,
+                null,
+                false,
+                true
+        );
+
+        List<MavenArtifact> allDependencies = new ArrayList<>(mavenProject.getDependencies());
+        allDependencies.add(thisArtifact);
         return allDependencies;
     }
 
