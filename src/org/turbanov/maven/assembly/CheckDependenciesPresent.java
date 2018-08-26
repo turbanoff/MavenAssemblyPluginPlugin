@@ -6,7 +6,6 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.XmlSuppressableInspectionTool;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
@@ -20,7 +19,8 @@ import org.jetbrains.idea.maven.model.MavenArtifact;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Andrey Turbanov
@@ -97,15 +97,7 @@ public class CheckDependenciesPresent extends XmlSuppressableInspectionTool {
     }
 
     private boolean matches(@NotNull String includeText, @NotNull MavenArtifact artifact) {
-        StringBuilder sb = new StringBuilder()
-                .append(artifact.getGroupId())
-                .append(':')
-                .append(artifact.getArtifactId());
-        String classifier = artifact.getClassifier();
-        if (!StringUtil.isEmpty(classifier)) {
-            sb.append(':').append(classifier);
-        }
-        String wholeId = sb.toString();
+        String wholeId = artifact.getDisplayStringWithTypeAndClassifier();
         return matchAgainst(wholeId, includeText);
     }
 
