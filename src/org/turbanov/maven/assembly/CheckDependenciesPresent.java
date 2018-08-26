@@ -6,6 +6,7 @@ import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.codeInspection.XmlSuppressableInspectionTool;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
@@ -16,6 +17,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.model.MavenArtifact;
+import org.jetbrains.idea.maven.model.MavenId;
 import org.jetbrains.idea.maven.project.MavenProject;
 import org.jetbrains.idea.maven.project.MavenProjectsManager;
 
@@ -98,7 +100,23 @@ public class CheckDependenciesPresent extends XmlSuppressableInspectionTool {
 
     private boolean matches(@NotNull String includeText, @NotNull MavenArtifact artifact) {
         String wholeId = artifact.getDisplayStringWithTypeAndClassifier();
-        return matchAgainst(wholeId, includeText);
+        if (matchAgainst(wholeId, includeText)) {
+            return true;
+        }
+        String versionLessId = getDependencyConflictId(artifact);
+        return matchAgainst(versionLessId, includeText);
+    }
+
+    public String getDependencyConflictId(@NotNull MavenArtifact artifact) {
+        StringBuilder builder = new StringBuilder();
+
+        MavenId.append(builder, artifact.getGroupId());
+        MavenId.append(builder, artifact.getArtifactId());
+        MavenId.append(builder, artifact.getType());
+        String classifier = artifact.getClassifier();
+        if (!StringUtil.isEmptyOrSpaces(classifier)) MavenId.append(builder, classifier);
+
+        return builder.toString();
     }
 
     private boolean matchAgainst(@NotNull String value, @NotNull String pattern) {
